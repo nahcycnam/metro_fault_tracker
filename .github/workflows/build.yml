@@ -2,17 +2,15 @@ name: Build with Nuitka
 
 on:
   push:
-    branches:
-      - master          # 添加这一行，只在 master 分支的 push 触发（一般不需要）
     tags:
-      - 'v*'            # 推送 v1.0, v1.2 这样的 tag 时触发
-  workflow_dispatch:    # 也可以在 Actions 页面手动触发
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   build-windows:
     runs-on: windows-latest
     permissions:
-      contents: write    # 允许写入 Release
+      contents: write
 
     steps:
       - name: Checkout 代码
@@ -22,12 +20,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip'
 
       - name: 安装依赖
         run: |
           pip install nuitka zstandard
-          pip install -r requirements.txt
+          pip install requests beautifulsoup4 PyQt6 PyQt6-WebEngine lxml
 
       - name: 使用 Nuitka 打包
         uses: Nuitka/Nuitka-Action@main
@@ -39,6 +36,7 @@ jobs:
           windows-icon-from-ico: logo.ico
           include-data-dir: |
             css=css
+          # 注意：不要写 mode: app 或类似的参数
 
       - name: 上传到 Release
         uses: softprops/action-gh-release@v1

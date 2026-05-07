@@ -91,7 +91,7 @@ def set_taskbar_icon(app):
 		print(f"设置任务栏图标时出错: {e}")
 
 
-def get_lims_report(station='0509'):
+def get_lims_report(station='0508'):
 	# 获取sessionId
 	timestamp = round(time.time() * 1000)
 	url = f'http://frpt.gzmetro.com/webroot/decision/view/report?viewlet=02_LMIS/车站管理/车站未修复故障.cpt&_={timestamp}&CUST_LINENUM=L{station[:2]}&CUST_STATION=L{station[:2]}Z{station[-2:]}'

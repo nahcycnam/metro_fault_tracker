@@ -34,8 +34,30 @@ jobs:
           --enable-plugin=pyqt6 `
           main.py
 
-    - name: Upload
+    - name: Upload to GitHub Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: 车站未修复故障
         path: main.dist/
+
+    # 新增：上传到腾讯云 COS
+    - name: Install coscmd
+      run: pip install coscmd
+
+    - name: Configure coscmd
+      env:
+        SECRET_ID: ${{ secrets.COS_SECRET_ID }}
+        SECRET_KEY: ${{ secrets.COS_SECRET_KEY }}
+        BUCKET: ${{ secrets.COS_BUCKET }}
+        REGION: ${{ secrets.COS_REGION }}
+      run: |
+        coscmd config -a $env:SECRET_ID -s $env:SECRET_KEY -b $env:BUCKET -r $env:REGION
+
+    - name: Upload EXE to COS
+      run: |
+        # 进入构建输出目录
+        cd main.dist
+        # 上传所有文件到 COS（保持目录结构）
+        coscmd upload -rfs ./ /
+        # 可选：上传单独的 exe 文件到根目录
+        coscmd upload "车站未修复故障.exe" /车站未修复故障.exe

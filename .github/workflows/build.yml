@@ -27,7 +27,7 @@ jobs:
           --standalone `
           --windows-console-mode=disable `
           --include-data-files=logo.ico=logo.ico `
-          --windows-icon-from-ico=time.ico `
+          --windows-icon-from-ico=logo.ico `
           --output-filename=车站未修复故障 `
           --jobs=2 `
           --assume-yes-for-downloads `

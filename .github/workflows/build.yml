@@ -2,15 +2,17 @@ name: Build with Nuitka
 
 on:
   push:
+    branches:
+      - master          # 添加这一行，只在 master 分支的 push 触发（一般不需要）
     tags:
-      - 'v*'           # 推送 v1.0, v1.2 这样的 tag 时触发
-  workflow_dispatch:   # 也可以在 Actions 页面手动触发
+      - 'v*'            # 推送 v1.0, v1.2 这样的 tag 时触发
+  workflow_dispatch:    # 也可以在 Actions 页面手动触发
 
 jobs:
   build-windows:
     runs-on: windows-latest
     permissions:
-      contents: write   # 允许写入 Release
+      contents: write    # 允许写入 Release
 
     steps:
       - name: Checkout 代码
@@ -30,13 +32,13 @@ jobs:
       - name: 使用 Nuitka 打包
         uses: Nuitka/Nuitka-Action@main
         with:
-          script-name: main.py          # 你的主程序文件名
-          onefile: true                 # 打包成单个 exe 文件
-          enable-plugins: pyqt6         # 启用 PyQt6 插件
-          windows-disable-console: true # 不显示控制台黑窗口
-          windows-icon-from-ico: logo.ico  # 设置 exe 图标
+          script-name: main.py
+          onefile: true
+          enable-plugins: pyqt6
+          windows-disable-console: true
+          windows-icon-from-ico: logo.ico
           include-data-dir: |
-            css=css                     # 将 css 文件夹打包进去
+            css=css
 
       - name: 上传到 Release
         uses: softprops/action-gh-release@v1

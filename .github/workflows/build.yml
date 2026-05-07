@@ -2,44 +2,40 @@ name: Build with Nuitka
 
 on:
   push:
-    tags:
-      - 'v*'
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
-  build-windows:
+  build:
     runs-on: windows-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: Checkout 代码
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: 安装 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
 
-      - name: 安装依赖
-        run: |
-          pip install nuitka zstandard
-          pip install requests beautifulsoup4 PyQt6 PyQt6-WebEngine lxml
+    - name: Install dependencies
+      run: |
+        pip install nuitka
+        pip install -r requirements.txt
 
-      - name: 使用 Nuitka 打包
-        uses: Nuitka/Nuitka-Action@main
-        with:
-          script-name: main.py
-          onefile: true
-          enable-plugins: pyqt6
-          windows-disable-console: true
-          windows-icon-from-ico: logo.ico
-          include-data-dir: |
-            css=css
-          # 注意：不要写 mode: app 或类似的参数
+    - name: Build
+      run: |
+        python -m nuitka `
+          --standalone `
+          --windows-console-mode=disable `
+          --include-data-files=logo.ico=logo.ico `
+          --windows-icon-from-ico=time.ico `
+          --output-filename=车站未修复故障 `
+          --jobs=2 `
+          --assume-yes-for-downloads `
+          --enable-plugin=pyqt6 `
+          main.py
 
-      - name: 上传到 Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: build/main.exe
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: 车站未修复故障
+        path: main.dist/

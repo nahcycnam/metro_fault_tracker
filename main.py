@@ -142,11 +142,6 @@ def remove_scroll_properties(html_content):
 def background_color_rgb(html_content):
 	soup = BeautifulSoup(html_content, 'lxml')
 
-	# 替换黄色
-	target_tds = soup.find_all('td', style=lambda x: x and 'background-color:rgb(0,255,255)' in x)
-	for td in target_tds:
-		td['style'] = td['style'].replace('rgb(0,255,255)', 'rgb(255,255,0)')
-
 	tbody = soup.body.div.div.div.div.table.tbody
 	trs = tbody.find_all('tr')
 
